@@ -4,4 +4,4 @@
 all: main
 
 main: main.c
-	gcc main.c pipe.c -pthread -Wall -o main
+	gcc main.c pipe.c -pthread -Wall -O0 -o main
