@@ -1,7 +1,10 @@
 # Muito simples, apenas para nao precisar rodar o comando inteiro do gcc
 # everytime
 
+CC := gcc
+CFLAGS := -pthread -Wall -O0 -pg
+
 all: main
 
 main: main.c
-	gcc main.c pipe.c -pthread -Wall -O0 -o main
+	${CC} main.c pipe.c ${CFLAGS} -o main
