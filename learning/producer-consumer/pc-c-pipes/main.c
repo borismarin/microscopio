@@ -132,27 +132,27 @@ int main(int argc, char* argv[]) {
         bSilent = (char) atoi(argv[2]);
     }
 
-    if(!bSilent) printf("Running single pixel per send...\n");
-    pthread_t producer_thread;
-    pthread_t consumer_thread;
+    /*if(!bSilent) printf("Running single pixel per send...\n");*/
+    /*pthread_t producer_thread;*/
+    /*pthread_t consumer_thread;*/
 
-    pipe_t *pipe = pipe_new(sizeof(Pixel), 0);
+    /*pipe_t *pipe = pipe_new(sizeof(Pixel), 0);*/
 
-    pipe_producer_t *producer = pipe_producer_new(pipe);
-    pipe_consumer_t *consumer = pipe_consumer_new(pipe);
+    /*pipe_producer_t *producer = pipe_producer_new(pipe);*/
+    /*pipe_consumer_t *consumer = pipe_consumer_new(pipe);*/
 
-    pipe_free(pipe);
+    /*pipe_free(pipe);*/
 
     producer_thread_args_t args;
-    args.pProducer = producer;
+    /*args.pProducer = producer;*/
     args.nBufSize = nBufSize;
     args.bSilent = bSilent;
 
-    pthread_create(&producer_thread, NULL, &producer_func, &args);
-    pthread_create(&consumer_thread, NULL, &consumer_func, consumer);
+    /*pthread_create(&producer_thread, NULL, &producer_func, &args);*/
+    /*pthread_create(&consumer_thread, NULL, &consumer_func, consumer);*/
 
-    pthread_join(producer_thread, NULL);
-    pthread_join(consumer_thread, NULL);
+    /*pthread_join(producer_thread, NULL);*/
+    /*pthread_join(consumer_thread, NULL);*/
 
     if(!bSilent) printf("Running buffered with chunks of %d pixels...\n", nBufSize);
     pthread_t producer_buffered_thread;
