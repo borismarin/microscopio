@@ -1,3 +1,5 @@
-void kek() {
+#include <aoldaq.h>
+
+void stub() {
 
 }
