@@ -31,6 +31,7 @@ typedef struct {
     /// The size of the block used for dumping data into the fifo
     uint32_t block_size;
 
+    aoldaq_scan_params_t scan_params;
 } aoldaq_args_t;
 
 /// This struct holds a single ramp
@@ -61,11 +62,11 @@ extern void aoldaq_start(aoldaq_t *p_state);
 //      p_state: a pointer to an instance.
 extern void aoldaq_stop(aoldaq_t *p_state);
 
-/// Pop the ramps from the FIFO and return them.
+/// Pop the ramps from the FIFO.
 ///     p_state: a pointer to an instance.
 ///     n_cycles: the number of cycles to get.
-///     p_read: a pointer to a variable that will hold
-///         the number of cycles read.
-extern ramp_t *aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, uint32_t *p_read);
+///     buf: a pointer to the buffer that will receive the ramps.
+//  Returns the number of ramps read.
+extern uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf);
 
 #endif 

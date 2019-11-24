@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <pthread.h>
-#include <aoldaq.h>
+#include <aoldaq/aoldaq.h>
 
 #include "pipe.h"
 
@@ -21,6 +21,9 @@ struct aoldaq_t {
     volatile unsigned char running;
     /// Controls if we should terminate the thread
     volatile unsigned char quit;
+
+    // Scan Params
+    aoldaq_scan_params_t scan_params;
 
     // FPGA
     fpga_t *p_fpga;

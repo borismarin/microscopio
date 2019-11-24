@@ -1,7 +1,19 @@
 [
 {
   "directory": "/data/Coding/ufabc/ic/microscopio/aoldaq/build",
-  "command": "/usr/bin/cc -Daoldaq_EXPORTS -I.././include  -g -fPIC   -o CMakeFiles/aoldaq.dir/src/aoldaq.c.o   -c /data/Coding/ufabc/ic/microscopio/aoldaq/src/aoldaq.c",
-  "file": "/data/Coding/ufabc/ic/microscopio/aoldaq/src/aoldaq.c"
+  "command": "/usr/bin/cc -DAOL_UNIX -Daoldaq_EXPORTS -I.././include -I.././external/include  -g -fPIC   -pthread -o CMakeFiles/aoldaq.dir/src/aoldaq_core.c.o   -c /data/Coding/ufabc/ic/microscopio/aoldaq/src/aoldaq_core.c",
+  "file": "/data/Coding/ufabc/ic/microscopio/aoldaq/src/aoldaq_core.c"
+},
+
+{
+  "directory": "/data/Coding/ufabc/ic/microscopio/aoldaq/build",
+  "command": "/usr/bin/cc -DAOL_UNIX -Daoldaq_EXPORTS -I.././include -I.././external/include  -g -fPIC   -pthread -o CMakeFiles/aoldaq.dir/src/fpga.c.o   -c /data/Coding/ufabc/ic/microscopio/aoldaq/src/fpga.c",
+  "file": "/data/Coding/ufabc/ic/microscopio/aoldaq/src/fpga.c"
+},
+
+{
+  "directory": "/data/Coding/ufabc/ic/microscopio/aoldaq/build",
+  "command": "/usr/bin/cc -DAOL_UNIX -Daoldaq_EXPORTS -I.././include -I.././external/include  -g -fPIC   -pthread -o CMakeFiles/aoldaq.dir/src/pipe.c.o   -c /data/Coding/ufabc/ic/microscopio/aoldaq/src/pipe.c",
+  "file": "/data/Coding/ufabc/ic/microscopio/aoldaq/src/pipe.c"
 }
 ]

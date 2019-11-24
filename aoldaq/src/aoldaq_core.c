@@ -24,6 +24,7 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
     }
 
     p_state->p_fpga = p_fpga;
+    p_state->scan_params = p_args->scan_params;
 
     p_state->running = 0;
     p_state->quit = 0;
@@ -78,7 +79,23 @@ void *daq_thread_fun(void *p_args_raw) {
     return NULL;
 }
 
-ramp_t *aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, uint32_t *p_read) {
-    // TODO read!
-    return NULL;
+uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf) {
+    switch(p_state->scan_params.mode) {
+        case AOLDAQ_IMAGING_MODE_RASTER:
+            // TODO improve
+            // these are hardcoded, just for initial testing.
+            buf[0].n_channels = 1;
+            buf[0].voxels_per_channel = &p_state->scan_params.voxels_for_ramp;
+            buf[0].voxels[0] = 
+                realloc(buf[0].voxels[0], sizeof(uint32_t) * buf[0].voxels_per_channel[0]);
+            
+            // read
+            fpga_read(p_state->p_fpga, buf[0].voxels[0], buf[0].voxels_per_channel[0]);
+
+            return 1; // TODO
+            break;
+        default:
+            return 0;
+            break;
+    }
 }
