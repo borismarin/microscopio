@@ -86,8 +86,12 @@ uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf) {
             // these are hardcoded, just for initial testing.
             buf[0].n_channels = 1;
             buf[0].voxels_per_channel = &p_state->scan_params.voxels_for_ramp;
+            if(buf[0].voxels) {
+                free(buf[0].voxels); // for some reason, RenderDOC doesnt run with this
+            }
+            buf[0].voxels = malloc(sizeof(uint32_t *) * buf[0].n_channels);
             buf[0].voxels[0] = 
-                realloc(buf[0].voxels[0], sizeof(uint32_t) * buf[0].voxels_per_channel[0]);
+                malloc(sizeof(uint32_t) * buf[0].voxels_per_channel[0]);
             
             // read
             fpga_read(p_state->p_fpga, buf[0].voxels[0], buf[0].voxels_per_channel[0]);
