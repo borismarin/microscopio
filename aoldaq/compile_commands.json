@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/data/Coding/ufabc/ic/microscopio/aoldaq/build",
+  "command": "/usr/bin/cc -Daoldaq_EXPORTS -I.././include  -g -fPIC   -o CMakeFiles/aoldaq.dir/src/aoldaq.c.o   -c /data/Coding/ufabc/ic/microscopio/aoldaq/src/aoldaq.c",
+  "file": "/data/Coding/ufabc/ic/microscopio/aoldaq/src/aoldaq.c"
+}
+]

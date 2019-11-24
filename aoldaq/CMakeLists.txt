@@ -16,10 +16,27 @@ ENDIF(UNIX AND CMAKE_BUILD_TYPE MATCHES DEBUG)
 
 # Add the source files
 ADD_LIBRARY(aoldaq SHARED
-    src/aoldaq.c)
+    src/aoldaq_core.c
+    src/fpga.c
+    src/pipe.c)
+
+# Set our own OS flags and the specific 
+IF(UNIX AND NOT APPLE)
+    ADD_DEFINITIONS(-DAOL_UNIX)
+    LINK_DIRECTORIES(./external/lib/linux64)
+
+    SET_TARGET_PROPERTIES(aoldaq PROPERTIES COMPILE_OPTIONS "-pthread")
+    SET_TARGET_PROPERTIES(aoldaq PROPERTIES INTERFACE_COMPILE_OPTIONS "-pthread")
+ELSEIF(MSVC)
+    ADD_DEFINITIONS(-DAOL_WIN32)
+    LINK_DIRECTORIES(./external/lib/win64)
+    TARGET_INCLUDE_DIRECTORIES(aoldaq PRIVATE ./external/include.win64) # pthreads!
+    TARGET_LINK_LIBRARIES(aoldaq pthreadVC2)
+ENDIF(UNIX AND NOT APPLE)
 
 # Add the headers
-TARGET_INCLUDE_DIRECTORIES(aoldaq PRIVATE ./include)
+TARGET_INCLUDE_DIRECTORIES(aoldaq PUBLIC ./include)
+TARGET_INCLUDE_DIRECTORIES(aoldaq PRIVATE ./external/include)
 
 # Specify the public header
 SET_TARGET_PROPERTIES(aoldaq PROPERTIES PUBLIC_HEADER include/aoldaq.h)
