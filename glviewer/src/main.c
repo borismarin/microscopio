@@ -61,8 +61,6 @@ void update_data() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, WIDTH, HEIGHT, 0, 
             GL_RED, GL_UNSIGNED_INT, &p_ramp->voxels[0][0]);
 
-    /*printf("%g\n", 2.0 * p_ramp->voxels[0][0] / 4294967295.0);*/
-
     glutPostRedisplay();
 }
 
