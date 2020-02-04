@@ -3,20 +3,20 @@
 aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
     aoldaq_t *p_state = malloc(sizeof(aoldaq_t));
 
-    pipe_t *pipe = pipe_new(sizeof(uint32_t), 0);
+    p_state->p_data_tx = os_pipe_alloc_producer();
+    p_state->p_data_rx = os_pipe_alloc_consumer();
 
-    p_state->p_data_tx = pipe_producer_new(pipe);
-    p_state->p_data_rx = pipe_consumer_new(pipe);
-
-    pipe_free(pipe);
+    os_pipe_create(p_state->p_data_rx, p_state->p_data_tx);
 
     fpga_args_t args = { 1 };
     fpga_t *p_fpga = fpga_init_session(&args);
 
     if(!p_fpga) {
         // Bailing out, something happened
-        pipe_consumer_free(p_state->p_data_rx);
-        pipe_producer_free(p_state->p_data_tx);
+        os_pipe_destroy(p_state->p_data_rx, p_state->p_data_tx);
+
+        os_pipe_free_consumer(p_state->p_data_rx);
+        os_pipe_free_producer(p_state->p_data_tx);
 
         free(p_state);
 
@@ -25,14 +25,17 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
 
     p_state->p_fpga = p_fpga;
     p_state->scan_params = p_args->scan_params;
+    p_state->block_size = p_args->block_size;
 
     p_state->running = 0;
     p_state->quit = 0;
 
-    if(pthread_create(&p_state->daq_thread, NULL, &daq_thread_fun, p_args) != 0) {
+    if(pthread_create(&p_state->daq_thread, NULL, &daq_thread_fun, p_state) != 0) {
         // Bailing out, something happened
-        pipe_consumer_free(p_state->p_data_rx);
-        pipe_producer_free(p_state->p_data_tx);
+        os_pipe_destroy(p_state->p_data_rx, p_state->p_data_tx);
+
+        os_pipe_free_consumer(p_state->p_data_rx);
+        os_pipe_free_producer(p_state->p_data_tx);
 
         free(p_state);
 
@@ -48,7 +51,14 @@ void aoldaq_destroy_instance(aoldaq_t *p_state) {
     aoldaq_stop(p_state);
 
     p_state->quit = 1;
+    pthread_cancel(p_state->daq_thread);
     pthread_join(p_state->daq_thread, NULL);
+
+    os_pipe_destroy(p_state->p_data_rx, p_state->p_data_tx);
+
+    os_pipe_free_consumer(p_state->p_data_rx);
+    os_pipe_free_producer(p_state->p_data_tx);
+
 
     free(p_state);
 }
@@ -71,7 +81,7 @@ void *daq_thread_fun(void *p_args_raw) {
         
         uint32_t read = fpga_read(p_args->p_fpga, back_buffer, p_args->block_size);
 
-        pipe_push(p_args->p_data_tx, back_buffer, read);
+        os_pipe_write(p_args->p_data_tx, back_buffer, read * sizeof(uint32_t));
     }
 
     free(back_buffer);
@@ -94,7 +104,8 @@ uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf) {
                 malloc(sizeof(uint32_t) * buf[0].voxels_per_channel[0]);
             
             // read
-            fpga_read(p_state->p_fpga, buf[0].voxels[0], buf[0].voxels_per_channel[0]);
+            /*fpga_read(p_state->p_fpga, buf[0].voxels[0], buf[0].voxels_per_channel[0]);*/
+            os_pipe_read(p_state->p_data_rx, buf[0].voxels[0], buf[0].voxels_per_channel[0] * sizeof(uint32_t));
 
             return 1; // TODO
             break;

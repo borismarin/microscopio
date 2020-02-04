@@ -27,16 +27,20 @@ IF(UNIX AND NOT APPLE)
 
     SET_TARGET_PROPERTIES(aoldaq PROPERTIES COMPILE_OPTIONS "-pthread")
     SET_TARGET_PROPERTIES(aoldaq PROPERTIES INTERFACE_COMPILE_OPTIONS "-pthread")
+    
+    TARGET_LINK_LIBRARIES(aoldaq pthread)
 
-    TARGET_SOURCES(aoldaq PRIVATE src/os_pipe_unix.c)
-ELSEIF(MSVC)
+    TARGET_SOURCES(aoldaq PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_unix.c)
+ELSEIF(WIN32)
     ADD_DEFINITIONS(-DAOL_WIN32)
 
     LINK_DIRECTORIES(./external/lib/win64)
     TARGET_INCLUDE_DIRECTORIES(aoldaq PRIVATE ./external/include.win64) # pthreads!
-    TARGET_LINK_LIBRARIES(aoldaq pthreadVC2)
+    #TARGET_LINK_LIBRARIES(aoldaq pthreadVC2)
 
-    TARGET_SOURCES(aoldaq PRIVATE src/os_pipe_win32.c)
+    TARGET_LINK_LIBRARIES(aoldaq pthread)
+
+    TARGET_SOURCES(aoldaq PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_win32.c)
 ENDIF(UNIX AND NOT APPLE)
 
 # Add the headers
