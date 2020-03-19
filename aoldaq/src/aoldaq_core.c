@@ -8,7 +8,19 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
 
     os_pipe_create(p_state->p_data_rx, p_state->p_data_tx);
 
-    fpga_args_t args = { 1 };
+    fpga_args_t args;
+
+    if(p_args->mode == AOLDAQ_MODE_RANDOM) {
+        args.mode = FPGA_MODE_RANDOM;
+    } else if(p_args->mode == AOLDAQ_MODE_BITMAP) {
+        args.mode = FPGA_MODE_BITMAP;
+        args.bitmap_data = p_args->bitmap_data;
+        args.bitmap_width = p_args->bitmap_width;
+        args.bitmap_height = p_args->bitmap_height;
+    } else if(p_args->mode == AOLDAQ_MODE_REAL) {
+        args.mode = FPGA_MODE_RANDOM;
+    }
+
     fpga_t *p_fpga = fpga_init_session(&args);
 
     if(!p_fpga) {
@@ -97,7 +109,7 @@ uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf) {
             buf[0].n_channels = 1;
             buf[0].voxels_per_channel = &p_state->scan_params.voxels_for_ramp;
             if(buf[0].voxels) {
-                free(buf[0].voxels); // for some reason, RenderDOC doesnt run with this
+                /*free(buf[0].voxels); // for some reason, RenderDOC doesnt run with this*/
             }
             buf[0].voxels = malloc(sizeof(uint32_t *) * buf[0].n_channels);
             buf[0].voxels[0] = 
@@ -105,9 +117,9 @@ uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf) {
             
             // read
             /*fpga_read(p_state->p_fpga, buf[0].voxels[0], buf[0].voxels_per_channel[0]);*/
-            os_pipe_read(p_state->p_data_rx, buf[0].voxels[0], buf[0].voxels_per_channel[0] * sizeof(uint32_t));
+            uint32_t n = os_pipe_read(p_state->p_data_rx, buf[0].voxels[0], buf[0].voxels_per_channel[0] * sizeof(uint32_t));
 
-            return 1; // TODO
+            return n; // TODO
             break;
         default:
             return 0;
