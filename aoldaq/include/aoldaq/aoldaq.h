@@ -9,14 +9,36 @@
  * Written by: Eduardo Renesto
  */
 
+// Some macro hackery so that our .dll will actually export our symbols
+#ifdef AOL_WIN32
+#ifdef AOL_BUILD
+#define AOL_DLL __declspec(dllexport)
+#else
+#define AOL_DLL __declspec(dllimport)
+#endif
+#else
+#define AOL_DLL
+#endif
+
 /// This struct holds the state of the API. We pass this around so that 
 /// we don't have nasty global variables.
 typedef struct aoldaq_t aoldaq_t;
 
-/// Describes the imaging modes.
-// TODO add more imaging modes
+/// Describes in which mode we are running.
 typedef enum {
-    AOLDAQ_IMAGING_MODE_RASTER /// Raster mode
+    AOLDAQ_MODE_BITMAP,     /// Bitmap mode. Used to test data reconstruction.
+    AOLDAQ_MODE_RANDOM,     /// Simulated mode. Randomly generates data.
+    AOLDAQ_MODE_REAL        /// Uses the real hardware.
+} aoldaq_mode;
+
+/// Describes the imaging modes.
+/// See Core/data_structures/ImagingMode.m
+typedef enum {
+    AOLDAQ_IMAGING_MODE_RASTER,     /// Raster mode
+    AOLDAQ_IMAGING_MODE_POINTING,   /// Pointing mode
+    AOLDAQ_IMAGING_MODE_FUNCTIONAL, /// Functional mode
+    AOLDAQ_IMAGING_MODE_MINISCAN,   /// Miniscan mode
+    AOLDAQ_IMAGING_MODE_LAST        /// Don't use this one! This is just for tagging
 } aoldaq_imaging_mode;
 
 /// Describes the scan parameters. Based on ScanParams.m from the MATLAB toolbox.
@@ -31,7 +53,20 @@ typedef struct {
     /// The size of the block used for dumping data into the fifo
     uint32_t block_size;
 
+    /// The running mode.
+    aoldaq_mode mode;
+
+    /// The scan parameters.
     aoldaq_scan_params_t scan_params;
+
+    /// The data of the bitmap image. Only for bitmap mode.
+    uint32_t *bitmap_data;
+
+    /// The width of the image. Only for bitmap mode.
+    uint32_t bitmap_width;
+
+    /// The height of the image. Only for bitmap mode.
+    uint32_t bitmap_height;
 } aoldaq_args_t;
 
 /// This struct holds a single ramp
@@ -48,25 +83,25 @@ typedef struct {
 
 /// Create an AOLDAQ instance.
 ///     p_args: a pointer to a aoldaq_args_t struct
-extern aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args);
+AOL_DLL extern aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args);
 
 /// Perform cleanup and destroy an instance.
 ///     p_state: a pointer to an instance.
-extern void aoldaq_destroy_instance(aoldaq_t *p_state);
+AOL_DLL extern void aoldaq_destroy_instance(aoldaq_t *p_state);
 
 /// Start transferring data from the FPGA into the FIFO.
 ///     p_state: a pointer to an instance.
-extern void aoldaq_start(aoldaq_t *p_state);
+AOL_DLL extern void aoldaq_start(aoldaq_t *p_state);
 
 /// Stop transferring data from the FPGA into the FIFO.
 //      p_state: a pointer to an instance.
-extern void aoldaq_stop(aoldaq_t *p_state);
+AOL_DLL extern void aoldaq_stop(aoldaq_t *p_state);
 
 /// Pop the ramps from the FIFO.
 ///     p_state: a pointer to an instance.
 ///     n_cycles: the number of cycles to get.
 ///     buf: a pointer to the buffer that will receive the ramps.
 //  Returns the number of ramps read.
-extern uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf);
+AOL_DLL extern uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf);
 
 #endif 

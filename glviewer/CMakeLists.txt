@@ -37,6 +37,6 @@ LINK_DIRECTORIES(../aoldaq/build)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/quad.vs.glsl ${CMAKE_BINARY_DIR}/quad.vs.glsl COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/quad.fs.glsl ${CMAKE_BINARY_DIR}/quad.fs.glsl COPYONLY)
 
-TARGET_LINK_LIBRARIES(glviewer aoldaq -lglut -lGLEW -lGLU -lGL)
+TARGET_LINK_LIBRARIES(glviewer aoldaq -lglut -lGLEW -lGLU -lGL -lm)
 
 # TODO: Describe the install part

@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/home/edu/ufabc/ic/microscopio/glviewer/build",
+  "command": "/usr/bin/cc  -I/home/edu/ufabc/ic/microscopio/glviewer/../aoldaq/include  -g   -o CMakeFiles/glviewer.dir/src/shader.c.o   -c /home/edu/ufabc/ic/microscopio/glviewer/src/shader.c",
+  "file": "/home/edu/ufabc/ic/microscopio/glviewer/src/shader.c"
+},
+{
+  "directory": "/home/edu/ufabc/ic/microscopio/glviewer/build",
+  "command": "/usr/bin/cc  -I/home/edu/ufabc/ic/microscopio/glviewer/../aoldaq/include  -g   -o CMakeFiles/glviewer.dir/src/vao.c.o   -c /home/edu/ufabc/ic/microscopio/glviewer/src/vao.c",
+  "file": "/home/edu/ufabc/ic/microscopio/glviewer/src/vao.c"
+},
+{
+  "directory": "/home/edu/ufabc/ic/microscopio/glviewer/build",
+  "command": "/usr/bin/cc  -I/home/edu/ufabc/ic/microscopio/glviewer/../aoldaq/include  -g   -o CMakeFiles/glviewer.dir/src/texture.c.o   -c /home/edu/ufabc/ic/microscopio/glviewer/src/texture.c",
+  "file": "/home/edu/ufabc/ic/microscopio/glviewer/src/texture.c"
+},
+{
+  "directory": "/home/edu/ufabc/ic/microscopio/glviewer/build",
+  "command": "/usr/bin/cc  -I/home/edu/ufabc/ic/microscopio/glviewer/../aoldaq/include  -g   -o CMakeFiles/glviewer.dir/src/util.c.o   -c /home/edu/ufabc/ic/microscopio/glviewer/src/util.c",
+  "file": "/home/edu/ufabc/ic/microscopio/glviewer/src/util.c"
+},
+{
+  "directory": "/home/edu/ufabc/ic/microscopio/glviewer/build",
+  "command": "/usr/bin/cc  -I/home/edu/ufabc/ic/microscopio/glviewer/../aoldaq/include  -g   -o CMakeFiles/glviewer.dir/src/main.c.o   -c /home/edu/ufabc/ic/microscopio/glviewer/src/main.c",
+  "file": "/home/edu/ufabc/ic/microscopio/glviewer/src/main.c"
+}
+]

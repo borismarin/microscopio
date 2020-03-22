@@ -10,6 +10,12 @@
 typedef struct os_pipe_consumer_t os_pipe_consumer_t;
 typedef struct os_pipe_producer_t os_pipe_producer_t;
 
+os_pipe_consumer_t *os_pipe_alloc_consumer();
+os_pipe_producer_t *os_pipe_alloc_producer();
+
+void os_pipe_free_consumer(os_pipe_consumer_t *p_consumer);
+void os_pipe_free_producer(os_pipe_producer_t *p_producer);
+
 void os_pipe_create(os_pipe_consumer_t *p_consumer, os_pipe_producer_t *p_producer);
 void os_pipe_destroy(os_pipe_consumer_t *p_consumer, os_pipe_producer_t *p_producer);
 

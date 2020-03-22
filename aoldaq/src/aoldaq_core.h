@@ -2,7 +2,7 @@
 #include <pthread.h>
 #include <aoldaq/aoldaq.h>
 
-#include "pipe.h"
+#include "os_pipe.h"
 
 #include "fpga.h"
 
@@ -12,8 +12,8 @@
 struct aoldaq_t {
     // General stuff
     pthread_t daq_thread;
-    pipe_producer_t *p_data_tx;
-    pipe_consumer_t *p_data_rx;
+    os_pipe_producer_t *p_data_tx;
+    os_pipe_consumer_t *p_data_rx;
     uint32_t block_size;
 
     // Control flow

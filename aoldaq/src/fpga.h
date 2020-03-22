@@ -6,12 +6,29 @@
 // Functions related to low-level handling of the FPGA
 // TODO document this more
 
+/// Describes how to source the data.
+typedef enum {
+    FPGA_MODE_RANDOM,
+    FPGA_MODE_BITMAP,
+    FPGA_MODE_REAL
+} fpga_mode;
+
 typedef struct {
-    unsigned char simulated;
+    fpga_mode mode;
+
+    // For FPGA_MODE_BITMAP
+    uint32_t* bitmap_data;
+    uint32_t bitmap_size;
+    uint32_t bitmap_cursor;
 } fpga_t;
 
 typedef struct {
-    unsigned char simulated;
+    fpga_mode mode;
+
+    // For FPGA_MODE_BITMAP
+    uint32_t* bitmap_data;
+    uint32_t bitmap_width;
+    uint32_t bitmap_height;
 } fpga_args_t;
 
 /// Initializes a FPGA session.
