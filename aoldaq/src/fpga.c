@@ -63,6 +63,6 @@ uint32_t fpga_read(fpga_t *p_session, uint32_t *buf, uint32_t n) {
 // Fill buf with random data
 static void fpga_gen_random(uint32_t *buf, uint32_t n) {
     for(uint32_t i = 0; i < n; i++) {
-        buf[i] = rand() % (UINT32_MAX - 1);
+        buf[i] = rand() * UINT32_MAX / RAND_MAX;
     }
 }
