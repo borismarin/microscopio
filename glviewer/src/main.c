@@ -74,13 +74,35 @@ uint32_t *generate_bitmap(uint32_t width, uint32_t height) {
 void update_data() {
     uint32_t n = aoldaq_get_ramps(p_aoldaq, 1, p_ramp);
 
-    for(int j = 0; j < 10; j++) {
-        for(int i = 0; i < 10; i++) {
-            printf("(%d, %d) => %c ", i, j, 
-                (p_ramp->voxels[0][i + j*WIDTH] == (i * 1000 + j) ? 'y' : 'f')); 
-        }
-        printf("\n");
-    }
+    glBindTexture(GL_TEXTURE_2D, quad_tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, WIDTH, HEIGHT, 0, 
+            GL_RED, GL_UNSIGNED_INT, &p_ramp->voxels[0][0]);
+
+    glutPostRedisplay();
+}
+
+void setup_gl_objects(uint32_t width, uint32_t height) {
+    quad_shader = create_shader_program("quad.vs.glsl", "quad.fs.glsl");
+    quad_vao = create_vao(&quad_positions[0][0], &quad_uvs[0][0], 6);
+    quad_tex = create_texture(width, height);
+}
+
+// Creates the window
+void setup_window(uint32_t width, uint32_t height) {
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(width, height);
+    glutInitContextVersion(4,3);
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+    glutCreateWindow("AOLDAQ Live Viewer");
+
+    glewExperimental = 1;
+    glewInit();
+
+    setup_gl_objects(width, height);
+
+    glutDisplayFunc(&update_frame);
+    glutIdleFunc(&update_data);
 }
 
 int main(int argc, char* argv[]) {
