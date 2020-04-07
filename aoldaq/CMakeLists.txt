@@ -14,18 +14,24 @@ IF(UNIX AND CMAKE_BUILD_TYPE MATCHES DEBUG)
     SET(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 ENDIF(UNIX AND CMAKE_BUILD_TYPE MATCHES DEBUG)
 
+# Apparently, only the directories that are specified before the 
+# target are searched.
+IF(WIN32)
+    LINK_DIRECTORIES(./external/lib/win64)
+ENDIF(WIN32)
+
 # Add the source files
 ADD_LIBRARY(aoldaq SHARED
     src/aoldaq_core.c
-    src/fpga.c
-    src/pipe.c)
+    src/fpga.c)
+    #src/pipe.c)
 
 # Matlab's MEX apparently only likes .lib files.
 # Let's build a static version too, then!
 ADD_LIBRARY(aoldaq_static STATIC
     src/aoldaq_core.c
-    src/fpga.c
-    src/pipe.c)
+    src/fpga.c)
+    #src/pipe.c)
 
 # Set our own OS flags and the specific 
 IF(UNIX AND NOT APPLE)
@@ -52,10 +58,11 @@ ELSEIF(WIN32)
 
     LINK_DIRECTORIES(./external/lib/win64)
     TARGET_INCLUDE_DIRECTORIES(aoldaq PRIVATE ./external/include.win64) # pthreads!
+    TARGET_INCLUDE_DIRECTORIES(aoldaq_static PRIVATE ./external/include.win64) # pthreads!
     #TARGET_LINK_LIBRARIES(aoldaq pthreadVC2)
 
-    TARGET_LINK_LIBRARIES(aoldaq pthread)
-    TARGET_LINK_LIBRARIES(aoldaq_static pthread)
+    TARGET_LINK_LIBRARIES(aoldaq ${CMAKE_CURRENT_SOURCE_DIR}/external/lib/win64/pthreadVC2.lib)
+    TARGET_LINK_LIBRARIES(aoldaq_static ${CMAKE_CURRENT_SOURCE_DIR}/external/lib/win64/pthreadVC2.lib)
 
     TARGET_SOURCES(aoldaq PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_win32.c)
     TARGET_SOURCES(aoldaq_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_win32.c)

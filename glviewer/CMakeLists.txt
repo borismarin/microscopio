@@ -17,9 +17,21 @@ IF(UNIX AND CMAKE_BUILD_TYPE MATCHES DEBUG)
     SET(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 ENDIF(UNIX AND CMAKE_BUILD_TYPE MATCHES DEBUG)
 
-ADD_LIBRARY(aoldaq SHARED IMPORTED)
-SET_PROPERTY(TARGET aoldaq PROPERTY IMPORTED_LOCATION 
-    "${CMAKE_CURRENT_SOURCE_DIR}/../aoldaq/build/libaoldaq.so")
+ADD_SUBDIRECTORY(aoldaq)
+
+# Add the headers
+INCLUDE_DIRECTORIES(../aoldaq/include)
+LINK_DIRECTORIES(../aoldaq/build)
+
+IF(WIN32)
+    ADD_DEFINITIONS(-DWIN32)
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/deps/freeglut/include)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/deps/glew-2.1.0/include)
+    LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/deps/freeglut/lib/x64)
+    LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/deps/glew-2.1.0/lib/Release/x64)
+    LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../aoldaq/build_win)
+ENDIF(WIN32)
 
 # Add the source files
 ADD_EXECUTABLE(glviewer
@@ -29,14 +41,10 @@ ADD_EXECUTABLE(glviewer
     src/util.c
     src/main.c)
 
-# Add the headers
-INCLUDE_DIRECTORIES(../aoldaq/include)
-LINK_DIRECTORIES(../aoldaq/build)
-
 # Copy the shaders
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/quad.vs.glsl ${CMAKE_BINARY_DIR}/quad.vs.glsl COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/quad.fs.glsl ${CMAKE_BINARY_DIR}/quad.fs.glsl COPYONLY)
 
-TARGET_LINK_LIBRARIES(glviewer aoldaq -lglut -lGLEW -lGLU -lGL -lm)
+TARGET_LINK_LIBRARIES(glviewer aoldaq glew32 -lglut -lGLEW -lGLU -lGL -lm)
 
 # TODO: Describe the install part

@@ -1,0 +1,6 @@
+Z:/microscopio/glviewer/build_win/msvc/CMakeFiles/glviewer.dir
+Z:/microscopio/glviewer/build_win/msvc/CMakeFiles/ALL_BUILD.dir
+Z:/microscopio/glviewer/build_win/msvc/CMakeFiles/ZERO_CHECK.dir
+Z:/microscopio/glviewer/build_win/msvc/aoldaq/CMakeFiles/aoldaq.dir
+Z:/microscopio/glviewer/build_win/msvc/aoldaq/CMakeFiles/aoldaq_static.dir
+Z:/microscopio/glviewer/build_win/msvc/aoldaq/CMakeFiles/ALL_BUILD.dir

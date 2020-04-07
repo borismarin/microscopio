@@ -1,0 +1,2 @@
+/usr/bin/x86_64-w64-mingw32-ar qc libaoldaq_static.a  CMakeFiles/aoldaq_static.dir/src/aoldaq_core.c.obj CMakeFiles/aoldaq_static.dir/src/fpga.c.obj CMakeFiles/aoldaq_static.dir/src/os_pipe_win32.c.obj
+/usr/bin/x86_64-w64-mingw32-ranlib libaoldaq_static.a

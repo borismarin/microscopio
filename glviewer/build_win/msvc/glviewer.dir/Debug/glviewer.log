@@ -1,0 +1,6 @@
+﻿LINK : warning LNK4044: unrecognized option '/lglut'; ignored
+LINK : warning LNK4044: unrecognized option '/lGLEW'; ignored
+LINK : warning LNK4044: unrecognized option '/lGLU'; ignored
+LINK : warning LNK4044: unrecognized option '/lGL'; ignored
+LINK : warning LNK4044: unrecognized option '/lm'; ignored
+  glviewer.vcxproj -> Z:\microscopio\glviewer\build_win\msvc\Debug\glviewer.exe

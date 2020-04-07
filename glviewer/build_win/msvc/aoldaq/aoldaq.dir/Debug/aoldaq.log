@@ -1,0 +1,10 @@
+﻿  aoldaq_core.c
+Z:\microscopio\glviewer\aoldaq\src\aoldaq_core.c(120,1): warning C4267: 'initializing': conversion from 'size_t' to 'uint32_t', possible loss of data
+  fpga.c
+  os_pipe_win32.c
+Z:\microscopio\glviewer\aoldaq\src\os_pipe_win32.c(42,42): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
+Z:\microscopio\glviewer\aoldaq\src\os_pipe_win32.c(48,41): warning C4267: 'function': conversion from 'size_t' to 'DWORD', possible loss of data
+Z:\microscopio\glviewer\aoldaq\src\os_pipe_win32.c(48,50): warning C4133: 'function': incompatible types - from 'size_t *' to 'LPDWORD'
+  Generating Code...
+     Creating library Z:/microscopio/glviewer/build_win/msvc/aoldaq/Debug/aoldaq.lib and object Z:/microscopio/glviewer/build_win/msvc/aoldaq/Debug/aoldaq.exp
+  aoldaq.vcxproj -> Z:\microscopio\glviewer\build_win\msvc\aoldaq\Debug\aoldaq.dll

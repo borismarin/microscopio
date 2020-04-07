@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #include <aoldaq/aoldaq.h>
 

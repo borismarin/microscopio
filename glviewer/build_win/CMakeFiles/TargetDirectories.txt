@@ -1,0 +1,7 @@
+/home/edu/ufabc/ic/microscopio/glviewer/build_win/CMakeFiles/rebuild_cache.dir
+/home/edu/ufabc/ic/microscopio/glviewer/build_win/CMakeFiles/glviewer.dir
+/home/edu/ufabc/ic/microscopio/glviewer/build_win/CMakeFiles/edit_cache.dir
+/home/edu/ufabc/ic/microscopio/glviewer/build_win/aoldaq/CMakeFiles/edit_cache.dir
+/home/edu/ufabc/ic/microscopio/glviewer/build_win/aoldaq/CMakeFiles/aoldaq.dir
+/home/edu/ufabc/ic/microscopio/glviewer/build_win/aoldaq/CMakeFiles/rebuild_cache.dir
+/home/edu/ufabc/ic/microscopio/glviewer/build_win/aoldaq/CMakeFiles/aoldaq_static.dir

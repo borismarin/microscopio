@@ -1,0 +1,2 @@
+Z:\microscopio\glviewer\build_win\msvc\aoldaq\Debug\aoldaq_static.pdb
+Z:\microscopio\glviewer\build_win\msvc\aoldaq\aoldaq_static.dir\Debug\aoldaq_static.pdb

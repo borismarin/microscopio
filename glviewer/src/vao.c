@@ -1,5 +1,9 @@
 #include "vao.h"
 
+#ifdef WIN32
+#define NULL 0
+#endif
+
 GLuint create_vao(float *vertices, float *uvs, unsigned int n) {
     GLuint vao;
     glGenVertexArrays(1, &vao);
