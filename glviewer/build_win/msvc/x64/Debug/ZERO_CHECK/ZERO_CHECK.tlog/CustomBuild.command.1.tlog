@@ -1,0 +1,10 @@
+^Z:\MICROSCOPIO\GLVIEWER\BUILD_WIN\MSVC\CMAKEFILES\7A5C29E529213B7AEE431DF0B398C24F\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SZ:/microscopio/glviewer -BZ:/microscopio/glviewer/build_win/msvc --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file Z:/microscopio/glviewer/build_win/msvc/glviewer.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

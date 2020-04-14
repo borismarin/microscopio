@@ -50,3 +50,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Rust target for producer-consumer test
+# can we move this to a nested .gitignore file
+# further down in the folder tree?
+learning/producer-consumer/pc-rs/target

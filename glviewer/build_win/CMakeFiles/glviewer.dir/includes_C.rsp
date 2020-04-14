@@ -1,0 +1,1 @@
+-I/home/edu/ufabc/ic/microscopio/glviewer/../aoldaq/include -I/home/edu/ufabc/ic/microscopio/glviewer/deps/freeglut/include -I/home/edu/ufabc/ic/microscopio/glviewer/deps/glew-2.1.0/include -I/home/edu/ufabc/ic/microscopio/glviewer/aoldaq/./include 
