@@ -1,3 +1,8 @@
+/**
+ * TODO:
+ *  - add support for multiple channels
+ */
+
 #include "aoldaq_core.h"
 
 aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
@@ -125,4 +130,14 @@ uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf) {
             return 0;
             break;
     }
+}
+
+uint32_t aoldaq_get_voxels(aoldaq_t *p_state, uint8_t channel, uint32_t *buf, uint32_t n_voxels) {
+    if(!p_state) {
+        return 0;
+    }
+
+    // TODO add support for multiple channels
+    
+    return os_pipe_read(p_state->p_data_rx, buf, n_voxels * sizeof(uint32_t));
 }

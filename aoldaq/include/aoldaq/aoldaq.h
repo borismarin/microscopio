@@ -97,11 +97,20 @@ AOL_DLL extern void aoldaq_start(aoldaq_t *p_state);
 //      p_state: a pointer to an instance.
 AOL_DLL extern void aoldaq_stop(aoldaq_t *p_state);
 
+/// DEPRECATED! Use `aoldaq_get_voxels` to get voxels from each channel.
 /// Pop the ramps from the FIFO.
 ///     p_state: a pointer to an instance.
 ///     n_cycles: the number of cycles to get.
 ///     buf: a pointer to the buffer that will receive the ramps.
 //  Returns the number of ramps read.
 AOL_DLL extern uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, ramp_t *buf);
+
+/// Get voxels from the FIFO of the dedicated channel.
+///     p_state: a pointer to an instance.
+///     channel: the channel to read from (TODO).
+///     n_voxels: the number of voxels to read.
+///     buf: a pointer to the preallocated buffer that will receive the voxels.
+/// Returns the number of voxels read.
+AOL_DLL extern uint32_t aoldaq_get_voxels(aoldaq_t *p_state, uint8_t channel, uint32_t *buf, uint32_t n_voxels);
 
 #endif 
