@@ -59,6 +59,9 @@ typedef struct {
     /// The scan parameters.
     aoldaq_scan_params_t scan_params;
 
+    /// The number of channels to spawn. 
+    uint8_t n_channels;
+
     /// The data of the bitmap image. Only for bitmap mode.
     uint32_t *bitmap_data;
 
