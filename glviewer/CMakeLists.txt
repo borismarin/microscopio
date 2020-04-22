@@ -23,6 +23,8 @@ ADD_SUBDIRECTORY(aoldaq)
 INCLUDE_DIRECTORIES(../aoldaq/include)
 LINK_DIRECTORIES(../aoldaq/build)
 
+SET(GLEW32 "")
+
 IF(WIN32)
     ADD_DEFINITIONS(-DWIN32)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
@@ -31,6 +33,8 @@ IF(WIN32)
     LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/deps/freeglut/lib/x64)
     LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/deps/glew-2.1.0/lib/Release/x64)
     LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../aoldaq/build_win)
+
+    SET(GLEW32 "glew32")
 ENDIF(WIN32)
 
 # Add the source files
@@ -45,6 +49,6 @@ ADD_EXECUTABLE(glviewer
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/quad.vs.glsl ${CMAKE_BINARY_DIR}/quad.vs.glsl COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/quad.fs.glsl ${CMAKE_BINARY_DIR}/quad.fs.glsl COPYONLY)
 
-TARGET_LINK_LIBRARIES(glviewer aoldaq glew32 -lglut -lGLEW -lGLU -lGL -lm)
+TARGET_LINK_LIBRARIES(glviewer aoldaq ${GLEW32} -lglut -lGLEW -lGLU -lGL -lm)
 
 # TODO: Describe the install part

@@ -6,14 +6,6 @@
 
 #include <aoldaq/aoldaq.h>
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#define sleep(x) Sleep((x) * 1000)
-#else
-#include <unistd.h>
-#endif
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -21,8 +13,8 @@
 #include "vao.h"
 #include "texture.h"
 
-#define WIDTH 10
-#define HEIGHT 5
+#define WIDTH 400
+#define HEIGHT 400
 
 static float quad_positions[6][3] = {
     { 1.0, 1.0, 0.0 },      // Top Right
@@ -44,39 +36,59 @@ static float quad_uvs[6][2] = {
 
 static GLuint quad_shader;
 static GLuint quad_vao;
-static GLuint quad_tex;
+static GLuint quad_tex[2];
 
 static aoldaq_t *p_aoldaq;
-static ramp_t *p_ramp;
-
-void print_data(uint32_t *ptr, uint32_t width, uint32_t height) {
-    for(int j = 0; j < height; j++) {
-        printf("[ ");
-        for(int i = 0; i < width; i++) {
-            printf("%2d ", ptr[j*width + i]);
-        }
-        printf("]\n");
-    }
-}
+static uint32_t *buf0;
+static uint32_t *buf1;
 
 uint32_t *generate_bitmap(uint32_t width, uint32_t height) {
     uint32_t *ptr = malloc(sizeof(uint32_t) * width * height);
 
     for(int j = 0; j < height; j++) {
         for(int i = 0; i < width; i++) {
-            ptr[i + j * width] = i + j * width;
+            int ni = i / 20;
+            int nj = j / 20;
+            ptr[i + j * width] = (ni + nj) % 2 == 0 ? UINT32_MAX : 0;
         }
     }
 
     return ptr;
 }
 
-void update_data() {
-    uint32_t n = aoldaq_get_ramps(p_aoldaq, 1, p_ramp);
+void update_frame() {
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    glBindTexture(GL_TEXTURE_2D, quad_tex);
+    glUseProgram(quad_shader);
+    glBindVertexArray(quad_vao);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, quad_tex[0]);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, quad_tex[1]);
+
+    GLuint location0 = glGetUniformLocation(quad_shader, "_Channel0");
+    glUniform1i(location0, 0);
+    GLuint location1 = glGetUniformLocation(quad_shader, "_Channel1");
+    glUniform1i(location1, 1);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    glutSwapBuffers();
+}
+
+void update_data() {
+    uint32_t n0 = aoldaq_get_voxels(p_aoldaq, 0, buf0, WIDTH * HEIGHT);
+    uint32_t n1 = aoldaq_get_voxels(p_aoldaq, 1, buf1, WIDTH * HEIGHT);
+
+    glBindTexture(GL_TEXTURE_2D, quad_tex[0]);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, WIDTH, HEIGHT, 0, 
-            GL_RED, GL_UNSIGNED_INT, &p_ramp->voxels[0][0]);
+            GL_RED, GL_UNSIGNED_INT, buf0);
+
+    glBindTexture(GL_TEXTURE_2D, quad_tex[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, WIDTH, HEIGHT, 0, 
+            GL_RED, GL_UNSIGNED_INT, buf1);
+
+    /*printf("%g\n", 2.0 * p_ramp->voxels[0][0] / 4294967295.0);*/
 
     glutPostRedisplay();
 }
@@ -84,7 +96,8 @@ void update_data() {
 void setup_gl_objects(uint32_t width, uint32_t height) {
     quad_shader = create_shader_program("quad.vs.glsl", "quad.fs.glsl");
     quad_vao = create_vao(&quad_positions[0][0], &quad_uvs[0][0], 6);
-    quad_tex = create_texture(width, height);
+    quad_tex[0] = create_texture(width, height);
+    quad_tex[1] = create_texture(width, height);
 }
 
 // Creates the window
@@ -108,17 +121,14 @@ void setup_window(uint32_t width, uint32_t height) {
 int main(int argc, char* argv[]) {
     uint32_t *bitmap_data = generate_bitmap(WIDTH, HEIGHT);
 
-    printf("Generated data:\n");
-    print_data(bitmap_data, WIDTH, HEIGHT);
-
     aoldaq_scan_params_t scan_params = {
         AOLDAQ_IMAGING_MODE_RASTER,
         WIDTH * HEIGHT
     };
 
     aoldaq_args_t args = {
-        .block_size = 5,
-        .mode = AOLDAQ_MODE_BITMAP,
+        .block_size = 200,
+        .mode = AOLDAQ_MODE_RANDOM,
         .scan_params = scan_params,
         .bitmap_data = bitmap_data,
         .bitmap_width = WIDTH,
@@ -133,20 +143,21 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    p_ramp = (ramp_t *) malloc(sizeof(ramp_t));
+    buf0 = malloc(sizeof(uint32_t) * WIDTH * HEIGHT);
+    buf1 = malloc(sizeof(uint32_t) * WIDTH * HEIGHT);
+
+    glutInit(&argc, argv);
+    setup_window(WIDTH, HEIGHT);
 
     aoldaq_start(p_aoldaq);
-    sleep(5);
-
-    for(int i = 0; i < 1; i++) {
-        aoldaq_get_ramps(p_aoldaq, 1, p_ramp);
-        printf("Received data iter %d:\n", i);
-        print_data(p_ramp->voxels[0], WIDTH, HEIGHT);
-    }
+    glutMainLoop();
     aoldaq_stop(p_aoldaq);
 
     printf("Destroying AOLDAQ instance...\n");
     aoldaq_destroy_instance(p_aoldaq);
+
+    free(buf0);
+    free(buf1);
 
     return 0;
 }
