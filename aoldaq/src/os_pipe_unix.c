@@ -72,6 +72,6 @@ void os_pipe_write(os_pipe_producer_t *p_producer, void *data, size_t bytes) {
 size_t os_pipe_read(os_pipe_consumer_t *p_consumer, void *data, size_t bytes) {
     size_t nread = read(p_consumer->fd, data, bytes);
     if(nread == -1) return 0; // no data
-    if(nread < 0 && errno) printf("%s:%d: %s; nread = %d\n", __FILE__, __LINE__, strerror(errno), nread);
+    if(nread < 0 && errno) printf("%s:%d: %s; nread = %zu\n", __FILE__, __LINE__, strerror(errno), nread);
     return nread; 
 }
