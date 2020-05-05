@@ -116,4 +116,10 @@ AOL_DLL extern uint32_t aoldaq_get_ramps(aoldaq_t *p_state, uint32_t n_cycles, r
 /// Returns the number of voxels read.
 AOL_DLL extern uint32_t aoldaq_get_voxels(aoldaq_t *p_state, uint8_t channel, uint32_t *buf, uint32_t n_voxels);
 
+/// Gets the NiFpga session object from the underlying FPGA
+/// object. This is used to setup the physical acquisition FPGA
+/// through Matlab. Once we deal with the initialization ourselves, 
+/// this function will removed.
+AOL_DLL extern uint32_t aoldaq_get_nifpga_session(aoldaq_t *p_state);
+
 #endif 
