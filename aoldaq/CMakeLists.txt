@@ -42,7 +42,7 @@ IF(UNIX AND NOT APPLE)
     SET_TARGET_PROPERTIES(aoldaq PROPERTIES COMPILE_OPTIONS "-pthread")
     SET_TARGET_PROPERTIES(aoldaq PROPERTIES INTERFACE_COMPILE_OPTIONS "-pthread")
     
-    TARGET_LINK_LIBRARIES(aoldaq pthread)
+    TARGET_LINK_LIBRARIES(aoldaq pthread -ldl)
 
     TARGET_SOURCES(aoldaq PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_unix.c)
 
@@ -50,7 +50,7 @@ IF(UNIX AND NOT APPLE)
     SET_TARGET_PROPERTIES(aoldaq_static PROPERTIES COMPILE_OPTIONS "-pthread")
     SET_TARGET_PROPERTIES(aoldaq_static PROPERTIES INTERFACE_COMPILE_OPTIONS "-pthread")
     
-    TARGET_LINK_LIBRARIES(aoldaq_static pthread)
+    TARGET_LINK_LIBRARIES(aoldaq_static pthread -ldl)
 
     TARGET_SOURCES(aoldaq_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_unix.c)
 ELSEIF(WIN32)

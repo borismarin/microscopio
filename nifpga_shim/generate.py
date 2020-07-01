@@ -14,7 +14,7 @@ def format_type(ty):
 def gen_func(func):
     sig = ""
     sig += func.result_type.spelling + ' '
-    sig += func.spelling
+    sig += func.spelling.replace('NiFpga', 'NiFpgaDll')
     sig += '('
     
     body = ""

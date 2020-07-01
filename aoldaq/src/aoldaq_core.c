@@ -21,8 +21,13 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
         fpga_args.bitmap_width = p_args->bitmap_width;
         fpga_args.bitmap_height = p_args->bitmap_height;
     } else if(p_args->mode == AOLDAQ_MODE_REAL) {
-        fpga_args.mode = FPGA_MODE_RANDOM;
+        fpga_args.mode = FPGA_MODE_REAL;
+        fpga_args.nifpga_bitfile = p_args->nifpga_bitfile;
+        fpga_args.nifpga_resource = p_args->nifpga_resource;
+        fpga_args.nifpga_signature = p_args->nifpga_signature;
     }
+
+    fpga_args.n_channels = p_args->n_channels;
 
     p_state->p_fpga = fpga_init_session(&fpga_args);
 
