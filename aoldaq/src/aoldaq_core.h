@@ -41,7 +41,7 @@ struct aoldaq_t {
     aoldaq_scan_params_t scan_params;
 
     // FPGA
-    fpga_t **p_fpgas;
+    fpga_t *p_fpga;
 
     thread_args *p_thread_args;
 };

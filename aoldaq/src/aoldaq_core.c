@@ -1,6 +1,5 @@
 /**
  * TODO:
- *  - add support for multiple channels
  */
 
 #include "aoldaq_core.h"
@@ -12,7 +11,25 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
     p_state->p_data_txs = malloc(sizeof(os_pipe_producer_t*) * p_args->n_channels);
     p_state->p_data_rxs = malloc(sizeof(os_pipe_consumer_t*) * p_args->n_channels);
 
-    p_state->p_fpgas = malloc(sizeof(fpga_t*) * p_args->n_channels);
+    fpga_args_t fpga_args;
+
+    if(p_args->mode == AOLDAQ_MODE_RANDOM) {
+        fpga_args.mode = FPGA_MODE_RANDOM;
+    } else if(p_args->mode == AOLDAQ_MODE_BITMAP) {
+        fpga_args.mode = FPGA_MODE_BITMAP;
+        fpga_args.bitmap_data = p_args->bitmap_data;
+        fpga_args.bitmap_width = p_args->bitmap_width;
+        fpga_args.bitmap_height = p_args->bitmap_height;
+    } else if(p_args->mode == AOLDAQ_MODE_REAL) {
+        fpga_args.mode = FPGA_MODE_REAL;
+        fpga_args.nifpga_bitfile = p_args->nifpga_bitfile;
+        fpga_args.nifpga_resource = p_args->nifpga_resource;
+        fpga_args.nifpga_signature = p_args->nifpga_signature;
+    }
+
+    fpga_args.n_channels = p_args->n_channels;
+
+    p_state->p_fpga = fpga_init_session(&fpga_args);
 
     p_state->daq_threads = malloc(sizeof(pthread_t) * p_args->n_channels);
     p_state->p_thread_args = malloc(sizeof(thread_args) * p_args->n_channels);
@@ -34,28 +51,6 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
         p_state->p_data_rxs[i] = os_pipe_alloc_consumer();
 
         os_pipe_create(p_state->p_data_rxs[i], p_state->p_data_txs[i]);
-
-        fpga_args_t args;
-
-        if(p_args->mode == AOLDAQ_MODE_RANDOM) {
-            args.mode = FPGA_MODE_RANDOM;
-        } else if(p_args->mode == AOLDAQ_MODE_BITMAP) {
-            args.mode = FPGA_MODE_BITMAP;
-            args.bitmap_data = p_args->bitmap_data;
-            args.bitmap_width = p_args->bitmap_width;
-            args.bitmap_height = p_args->bitmap_height;
-        } else if(p_args->mode == AOLDAQ_MODE_REAL) {
-            args.mode = FPGA_MODE_RANDOM;
-        }
-
-        fpga_t *p_fpga = fpga_init_session(&args);
-
-        if(!p_fpga) {
-            success = 0;
-            break;
-        }
-
-        p_state->p_fpgas[i] = p_fpga;
 
         thread_args targs = {
             .channel_idx = i,
@@ -88,9 +83,10 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
             os_pipe_free_producer(p_state->p_data_txs[j]);
         }
 
+        fpga_destroy(p_state->p_fpga);
+
         free(p_state->p_data_txs);
         free(p_state->p_data_rxs);
-        free(p_state->p_fpgas);
         free(p_state->daq_threads);
         free(p_state->p_thread_args);
         free(p_state);
@@ -118,9 +114,10 @@ void aoldaq_destroy_instance(aoldaq_t *p_state) {
         os_pipe_free_producer(p_state->p_data_txs[i]);
     }
 
+    fpga_destroy(p_state->p_fpga);
+
     free(p_state->p_data_txs);
     free(p_state->p_data_rxs);
-    free(p_state->p_fpgas);
     free(p_state->daq_threads);
     free(p_state->p_thread_args);
     free(p_state);
@@ -143,7 +140,8 @@ void *daq_thread_fun(void *p_args_raw) {
         if(!p_args->p_state->running) continue;
         
         uint32_t read = fpga_read(
-                p_args->p_state->p_fpgas[p_args->channel_idx], 
+                p_args->p_state->p_fpga,
+                p_args->channel_idx, 
                 back_buffer,
                 p_args->p_state->block_size
         );

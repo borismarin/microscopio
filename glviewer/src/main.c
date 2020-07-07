@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#define AOL_USE_NIFPGA
 #include <aoldaq/aoldaq.h>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -128,11 +129,15 @@ int main(int argc, char* argv[]) {
 
     aoldaq_args_t args = {
         .block_size = 200,
-        .mode = AOLDAQ_MODE_RANDOM,
+        .mode = AOLDAQ_MODE_REAL,
         .scan_params = scan_params,
-        .bitmap_data = bitmap_data,
-        .bitmap_width = WIDTH,
-        .bitmap_height = HEIGHT,
+        /*.bitmap_data = bitmap_data,*/
+        /*.bitmap_width = WIDTH,*/
+        /*.bitmap_height = HEIGHT,*/
+        .nifpga_bitfile = "/gimme/chocolate",
+        .nifpga_signature = "atotallycorrectsignature",
+        .nifpga_resource = "RIO/de/janeiro",
+        .n_channels = 2,
     };
 
     printf("Creating AOLDAQ instance...\n");

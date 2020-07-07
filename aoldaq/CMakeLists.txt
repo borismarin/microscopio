@@ -42,7 +42,7 @@ IF(UNIX AND NOT APPLE)
     SET_TARGET_PROPERTIES(aoldaq PROPERTIES COMPILE_OPTIONS "-pthread")
     SET_TARGET_PROPERTIES(aoldaq PROPERTIES INTERFACE_COMPILE_OPTIONS "-pthread")
     
-    TARGET_LINK_LIBRARIES(aoldaq pthread)
+    TARGET_LINK_LIBRARIES(aoldaq pthread -ldl)
 
     TARGET_SOURCES(aoldaq PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_unix.c)
 
@@ -50,7 +50,7 @@ IF(UNIX AND NOT APPLE)
     SET_TARGET_PROPERTIES(aoldaq_static PROPERTIES COMPILE_OPTIONS "-pthread")
     SET_TARGET_PROPERTIES(aoldaq_static PROPERTIES INTERFACE_COMPILE_OPTIONS "-pthread")
     
-    TARGET_LINK_LIBRARIES(aoldaq_static pthread)
+    TARGET_LINK_LIBRARIES(aoldaq_static pthread -ldl)
 
     TARGET_SOURCES(aoldaq_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/os_pipe_unix.c)
 ELSEIF(WIN32)
@@ -70,6 +70,18 @@ ENDIF(UNIX AND NOT APPLE)
 
 # Win32 is picky...
 ADD_DEFINITIONS(-DAOL_BUILD)
+
+# Do we want to compile with support for the real FPGA?
+OPTION(AOL_USE_NIFPGA "Set this to ON to compile with support for the real acquisition FPGA." OFF)
+
+IF(AOL_USE_NIFPGA)
+    MESSAGE("Building using the real NiFpga interface.")
+    # Add our compile flag
+    ADD_DEFINITIONS(-DAOL_USE_NIFPGA)
+    # ...and add that ugly generated file
+    TARGET_SOURCES(aoldaq PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/NiFpga.c)
+    TARGET_SOURCES(aoldaq_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/NiFpga.c)
+ENDIF(AOL_USE_NIFPGA)
 
 # Add the headers
 TARGET_INCLUDE_DIRECTORIES(aoldaq PUBLIC ./include)
