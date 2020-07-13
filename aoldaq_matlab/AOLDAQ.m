@@ -11,9 +11,9 @@ classdef AOLDAQ < handle
     end
 
     methods
-        function self = AOLDAQ(sofile, hfile, block_size, acq_mode, scan_params, bitmap_data, bitmap_width, bitmap_height)
+        function self = AOLDAQ(sofile, hfile, block_size, acq_mode, scan_params, nifpga, bitmap_data, bitmap_width, bitmap_height)
             if not(libisloaded('libaoldaq'))
-                [notfound, warnings] = loadlibrary(sofile, hfile);
+                [notfound, warnings] = loadlibrary(sofile, hfile, 'addheader', 'use_nifpga.h');
 
                 %if notfound
                     %error('Could not open %s', sofile);
@@ -24,6 +24,16 @@ classdef AOLDAQ < handle
             args.block_size = block_size;
             args.mode = uint32(acq_mode);
             args.scan_params = scan_params;
+
+            if exist('nifpga', 'var')
+                args.nifpga_bitfile = nifpga.bitfile;
+                args.nifpga_signature = nifpga.signature;
+                args.nifpga_resource = nifpga.resource;
+            else
+                args.nifpga_bitfile = '';
+                args.nifpga_signature = '';
+                args.nifpga_resource = '';
+            end
             
             % Bitmap data has been passed, let's use
             if exist('bitmap_data', 'var')
@@ -68,6 +78,18 @@ classdef AOLDAQ < handle
             end
 
             clear data_ptr;
+        end
+
+        function session = get_nifpga_session(self)
+            session = calllib('libaoldaq', 'aoldaq_get_nifpga_session', self.Instance);
+        end
+
+        function flag_nifpga_initialized(self)
+            calllib('libaoldaq', 'aoldaq_flag_nifpga_initialized', self.Instance);
+        end
+
+        function flag_nifpga_not_initialized(self)
+            calllib('libaoldaq', 'aoldaq_flag_nifpga_not_initialized', self.Instance);
         end
 
         function delete(self)

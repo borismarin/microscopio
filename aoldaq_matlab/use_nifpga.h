@@ -1,0 +1,1 @@
+#define AOL_USE_NIFPGA
