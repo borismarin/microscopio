@@ -199,3 +199,23 @@ uint32_t aoldaq_get_voxels(aoldaq_t *p_state, uint8_t channel, uint32_t *buf, ui
             n_voxels * sizeof(uint32_t)
      );
 }
+
+#ifdef AOL_USE_NIFPGA
+uint32_t aoldaq_get_nifpga_session(aoldaq_t *p_state) {
+    if(!p_state) return 0;
+
+    return fpga_get_nifpga(p_state->p_fpga);
+}
+
+void aoldaq_flag_nifpga_initialized(aoldaq_t *p_state) {
+    if(!p_state) return;
+
+    p_state->p_fpga->nifpga_initialized = 1;
+}
+
+void aoldaq_flag_nifpga_not_initialized(aoldaq_t *p_state) {
+    if(!p_state) return;
+
+    p_state->p_fpga->nifpga_initialized = 0;
+}
+#endif

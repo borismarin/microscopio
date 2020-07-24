@@ -28,7 +28,7 @@ classdef AOLDAQ < handle
             if exist('nifpga', 'var')
                 args.nifpga_bitfile = nifpga.bitfile;
                 args.nifpga_signature = nifpga.signature;
-                args.nifpga_resource = nifpga.resource;
+                args.nifpga_resource = nifpga.target;
             else
                 args.nifpga_bitfile = '';
                 args.nifpga_signature = '';
@@ -90,6 +90,10 @@ classdef AOLDAQ < handle
 
         function flag_nifpga_not_initialized(self)
             calllib('libaoldaq', 'aoldaq_flag_nifpga_not_initialized', self.Instance);
+        end
+
+        function ok = is_ok(self)
+            ok = ~self.Instance.isNull();
         end
 
         function delete(self)

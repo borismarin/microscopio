@@ -18,17 +18,17 @@ def gen_func(func):
     sig += '('
     
     body = ""
-    body += f'\tprintf("{ func.spelling }");\n'
+    body += f'\tprintf("{ func.spelling }\\n");\n'
 
     for arg in func.get_arguments():
         sig += arg.type.spelling + ' '
         sig += arg.spelling + ', '
 
-        body += f'\tprintf("\\t{ arg.spelling } = { format_type(arg.type.spelling) }", { arg.spelling });\n'
+        body += f'\tprintf("\\t{ arg.spelling } = { format_type(arg.type.spelling) }\\n", { arg.spelling });\n'
     sig += ') {'
     body += '\treturn NiFpga_Status_Success;\n'
     body += '}'
-    print(sig)
+    print(sig.replace(', )', ')'))
     print(body)
     print("")
 
