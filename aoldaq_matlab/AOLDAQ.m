@@ -29,6 +29,8 @@ classdef AOLDAQ < handle
                 args.nifpga_bitfile = nifpga.bitfile;
                 args.nifpga_signature = nifpga.signature;
                 args.nifpga_resource = nifpga.target;
+                args.nifpga_attribute = nifpga.attribute;
+                args.nifpga_addresses = nifpga.addresses;
             else
                 args.nifpga_bitfile = '';
                 args.nifpga_signature = '';
