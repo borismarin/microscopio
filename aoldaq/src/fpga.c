@@ -11,6 +11,7 @@ fpga_t *fpga_init_session(fpga_args_t *p_args) {
 
     fpga_t *p_session = (fpga_t*) malloc(sizeof(fpga_t));
     p_session->mode = p_args->mode;
+    p_session->n_channels = p_args->n_channels;
 
     if(p_session->mode == FPGA_MODE_BITMAP) {
         p_session->bitmap_size = p_args->bitmap_width * p_args->bitmap_height;
@@ -36,7 +37,7 @@ fpga_t *fpga_init_session(fpga_args_t *p_args) {
             p_args->nifpga_bitfile,
             p_args->nifpga_signature,
             p_args->nifpga_resource,
-            0, // TODO attributes?
+            p_args->nifpga_attribute,
             &p_session->nifpga_session
         );
 
@@ -44,8 +45,13 @@ fpga_t *fpga_init_session(fpga_args_t *p_args) {
             free(p_session);
             return NULL;
         }
+
+        // Copy the addressess so that we dont rely on matlab not deleting it 
+        // whenever it wants
+        p_session->nifpga_addresses = malloc(sizeof(uint32_t) * p_session->n_channels);
+        memcpy(p_session->nifpga_addresses, p_args->nifpga_addresses, sizeof(uint32_t) * p_session->n_channels);
 #else
-        return NULL
+        return NULL;
 #endif
     }
 
@@ -53,14 +59,24 @@ fpga_t *fpga_init_session(fpga_args_t *p_args) {
 }
 
 void fpga_destroy(fpga_t *p_session) {
+    // Prevent double free
+    if(!p_session) return;
+
 #ifdef AOL_USE_NIFPGA
     NiFpga_Close(p_session->nifpga_session, 0);
     NiFpga_Finalize();
 #endif
+
+    if(p_session->mode == FPGA_MODE_REAL) {
+        free(p_session->nifpga_addresses);
+    }
+
     free(p_session);
 }
 
 uint32_t fpga_read(fpga_t *p_session, uint8_t channel, uint32_t *buf, uint32_t n) {
+    if(!p_session) return 0;
+
     if(p_session->mode == FPGA_MODE_RANDOM) {
         fpga_gen_random(buf, n);
         return n;
@@ -91,7 +107,7 @@ uint32_t fpga_read(fpga_t *p_session, uint8_t channel, uint32_t *buf, uint32_t n
         while(!p_session->nifpga_initialized); 
 
         NiFpga_Status status = NiFpga_ReadFifoU32(p_session->nifpga_session,
-                (uint32_t) channel,
+                p_session->nifpga_addresses[channel],
                 buf,
                 n,
                 NiFpga_InfiniteTimeout,

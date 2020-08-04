@@ -30,6 +30,7 @@ typedef struct {
 #ifdef AOL_USE_NIFPGA
     volatile char nifpga_initialized;
     NiFpga_Session nifpga_session;
+    uint32_t *nifpga_addresses;
 #endif
 } fpga_t;
 
@@ -48,6 +49,8 @@ typedef struct {
     const char *nifpga_bitfile;
     const char *nifpga_signature;
     const char *nifpga_resource;
+    uint32_t    nifpga_attribute;
+    uint32_t   *nifpga_addresses;
 #endif
 } fpga_args_t;
 

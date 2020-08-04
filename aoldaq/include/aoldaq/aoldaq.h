@@ -80,6 +80,13 @@ typedef struct {
 
     /// The target resource for the acquisition FPGA.
     const char *nifpga_resource;
+
+    /// The attribute for the acquisition FPGA.
+    uint32_t nifpga_attribute;
+
+    /// The array containing the NiFPGA addresses for each
+    /// of the channels.
+    uint32_t *nifpga_addresses;
 #endif
 } aoldaq_args_t;
 

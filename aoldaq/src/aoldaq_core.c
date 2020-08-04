@@ -25,6 +25,8 @@ aoldaq_t *aoldaq_create_instance(aoldaq_args_t *p_args) {
         fpga_args.nifpga_bitfile = p_args->nifpga_bitfile;
         fpga_args.nifpga_resource = p_args->nifpga_resource;
         fpga_args.nifpga_signature = p_args->nifpga_signature;
+        fpga_args.nifpga_attribute = p_args->nifpga_attribute;
+        fpga_args.nifpga_addresses = p_args->nifpga_addresses;
     }
 
     fpga_args.n_channels = p_args->n_channels;
@@ -137,6 +139,7 @@ void *daq_thread_fun(void *p_args_raw) {
     uint32_t *back_buffer = (uint32_t *) malloc(sizeof(uint32_t) * p_args->p_state->block_size);
 
     while(!p_args->p_state->quit) {
+        // TODO improve: use condvars
         if(!p_args->p_state->running) continue;
         
         uint32_t read = fpga_read(
