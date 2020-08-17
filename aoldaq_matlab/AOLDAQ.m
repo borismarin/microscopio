@@ -11,7 +11,7 @@ classdef AOLDAQ < handle
     end
 
     methods
-        function self = AOLDAQ(sofile, hfile, block_size, acq_mode, scan_params, nifpga, bitmap_data, bitmap_width, bitmap_height)
+        function self = AOLDAQ(sofile, hfile, block_size, acq_mode, scan_params, n_channels, nifpga, bitmap_data, bitmap_width, bitmap_height)
             if not(libisloaded('libaoldaq'))
                 [notfound, warnings] = loadlibrary(sofile, hfile, 'addheader', 'use_nifpga.h');
 
@@ -24,13 +24,14 @@ classdef AOLDAQ < handle
             args.block_size = block_size;
             args.mode = uint32(acq_mode);
             args.scan_params = scan_params;
+            args.n_channels = n_channels;
 
             if exist('nifpga', 'var')
                 args.nifpga_bitfile = nifpga.bitfile;
                 args.nifpga_signature = nifpga.signature;
                 args.nifpga_resource = nifpga.target;
                 args.nifpga_attribute = nifpga.attribute;
-                args.nifpga_addresses = nifpga.addresses;
+                args.nifpga_addresses = libpointer('uint32Ptr', nifpga.addresses);
             else
                 args.nifpga_bitfile = '';
                 args.nifpga_signature = '';
