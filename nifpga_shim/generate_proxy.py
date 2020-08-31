@@ -65,6 +65,7 @@ def gen_fptr_load_win(func):
 def gen_header():
     return """
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -77,9 +78,9 @@ def gen_header():
 static FILE *outfile;
 
 #ifdef _WIN32
-HMODULE handle;
+static HMODULE handle;
 #else
-void *handle;
+static void *handle;
 #endif
 
 static void _proxy_load_fns();
