@@ -96,7 +96,7 @@ static void _proxy_init() {
 #ifdef WIN32
     handle = LoadLibraryA("NiFpga.real.dll");
 #else
-    handle = dlopen("libNiFpga.real.so, RTLD_LAZY");
+    handle = dlopen("libNiFpga.real.so", RTLD_LAZY);
 #endif
 
     _proxy_load_fns();
@@ -114,7 +114,7 @@ static void _proxy_deinit() {
 
 def gen_load_fns(fns):
     body = 'static void _proxy_load_fns() {\n'
-    body += '\n'.join([ '\t' + gen_fptr_load_win(f) for f in fns ])
+    body += '\n'.join([ '\t' + gen_fptr_load_unix(f) for f in fns ])
     body += '\n}\n'
     return body
 
