@@ -2800,6 +2800,23 @@ NiFpga_Status NiFpga_GetPeerToPeerFifoEndpoint(NiFpga_Session session,
                                                uint32_t       fifo,
                                                uint32_t*      endpoint);
 
+/** These two functions are exported by the DLL, but not declared in the .h.
+ * Since I'm using the .h to generate the proxy and the shim, I have to declare
+ * them here.
+ *
+ * By Edu.
+ */
+NiFpga_Status NiFpga_GetBitfileContents(NiFpga_Session session,
+                                        const char**   contents);
+
+NiFpga_Status NiFpga_ClientFunctionCall(NiFpga_Session session,
+                                        uint32_t group,
+                                        uint32_t functionId,
+                                        const void* inBuffer,
+                                        size_t inBufferSize,
+                                        void* outBuffer,
+                                        size_t outBufferSize);
+
 #if NiFpga_Cpp
 }
 #endif

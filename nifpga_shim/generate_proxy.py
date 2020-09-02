@@ -76,6 +76,7 @@ def gen_header():
 #include "NiFpga.h"
 
 static FILE *outfile;
+static int initialized = 0;
 
 #ifdef _WIN32
 static HMODULE handle;
@@ -94,7 +95,7 @@ static void _proxy_init() {
     outfile = fopen(outfile_path, "a");
     fprintf(outfile, "===== LOADING PROXY =====\\n");
 
-#ifdef WIN32
+#ifdef _WIN32
     handle = LoadLibraryA("NiFpga.real.dll");
 #else
     handle = dlopen("libNiFpga.real.so", RTLD_LAZY);
@@ -116,6 +117,7 @@ static void _proxy_deinit() {
 def gen_load_fns(fns):
     body = 'static void _proxy_load_fns() {\n'
     body += '\n'.join([ '\t' + gen_fptr_load_unix(f) for f in fns ])
+    body += '\tinitialized = 1;\n'
     body += '\n}\n'
     return body
 
@@ -128,11 +130,13 @@ print('\n'.join([ gen_fptr_type(f) for f in functions ]))
 print('')
 print('\n'.join([ gen_fptr_decl(f) for f in functions ]))
 print('')
-print('\n'.join([ gen_fptr_use(f) for f in functions if not f.spelling in ["NiFpga_Open", "NiFpga_Close"] ]))
-print('')
-print('\n'.join([ gen_fptr_use(f, '\t_proxy_init();\n') for f in functions if f.spelling == "NiFpga_Open" ]))
-print('')
-print('\n'.join([ gen_fptr_use(f, '\t_proxy_deinit();\n') for f in functions if f.spelling == "NiFpga_Close" ]))
+print('\n'.join([ gen_fptr_use(f, '\tif(!initialized) _proxy_init();\n') for f in functions ]))
+# print('')
+# print('\n'.join([ gen_fptr_use(f) for f in functions if not f.spelling in ["NiFpga_Open", "NiFpga_Close"] ]))
+# print('')
+# print('\n'.join([ gen_fptr_use(f, '\t_proxy_init();\n') for f in functions if f.spelling == "NiFpga_Open" ]))
+# print('')
+# print('\n'.join([ gen_fptr_use(f, '\t_proxy_deinit();\n') for f in functions if f.spelling == "NiFpga_Close" ]))
 print('')
 # print(gen_fptr_load_win(functions[0]))
 print(gen_load_fns(functions))
