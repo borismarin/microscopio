@@ -21,33 +21,48 @@ classdef AOLDAQ < handle
             end
 
             args = {};
-            args.block_size = block_size;
+            %args.block_size = block_size;
             args.mode = uint32(acq_mode);
-            args.scan_params = scan_params;
+            %args.scan_params = scan_params;
             args.n_channels = n_channels;
 
+            niargs = {};
+
             if exist('nifpga', 'var')
-                args.nifpga_bitfile = nifpga.bitfile;
-                args.nifpga_signature = nifpga.signature;
-                args.nifpga_resource = nifpga.target;
-                args.nifpga_attribute = nifpga.attribute;
-                args.nifpga_addresses = libpointer('uint32Ptr', nifpga.addresses);
+                %args.nifpga_bitfile = nifpga.bitfile;
+                %args.nifpga_signature = nifpga.signature;
+                %args.nifpga_resource = nifpga.target;
+                %args.nifpga_attribute = nifpga.attribute;
+                %args.nifpga_addresses = libpointer('uint32Ptr', nifpga.addresses);
+
+                niargs.bitfile = nifpga.bitfile;
+                niargs.signature = nifpga.signature;
+                niargs.resource = nifpga.target;
+                niargs.attribute = nifpga.attribute;
+                niargs.addrs = libpointer('uint32Ptr', nifpga.addresses);
             else
-                args.nifpga_bitfile = '';
-                args.nifpga_signature = '';
-                args.nifpga_resource = '';
+                %args.nifpga_bitfile = '';
+                %args.nifpga_signature = '';
+                %args.nifpga_resource = '';
+
+                niargs.bitfile = '';
+                niargs.signature = '';
+                niargs.resource = '';
             end
+
+            niargs_struct = libstruct('NiFpgaArgs', niargs);
+            args.nifpga = libpointer('NiFpgaArgsPtr', niargs_struct);
             
             % Bitmap data has been passed, let's use
-            if exist('bitmap_data', 'var')
-                args.bitmap_data = bitmap_data;
-                args.bitmap_width = bitmap_width;
-                args.bitmap_height = bitmap_height;
-            else
-                args.bitmap_data = [];
-                args.bitmap_width = 0;
-                args.bitmap_height = 0;
-            end
+            %if exist('bitmap_data', 'var')
+                %args.bitmap_data = bitmap_data;
+                %args.bitmap_width = bitmap_width;
+                %args.bitmap_height = bitmap_height;
+            %else
+                %args.bitmap_data = [];
+                %args.bitmap_width = 0;
+                %args.bitmap_height = 0;
+            %end
 
             % Create our C structure
             args = libstruct('aoldaq_args_t', args);
@@ -74,7 +89,7 @@ classdef AOLDAQ < handle
             marker = 42; % This will show up in memory instead of meaningless 1s or 0s. This makes debugging easier.
             tmp = uint32(marker * ones(1, n_voxels));
             data_ptr = libpointer('uint32Ptr', tmp);
-            nread = calllib('libaoldaq', 'aoldaq_get_voxels', self.Instance, channel, data_ptr, n_voxels);
+            nread = calllib('libaoldaq', 'aoldaq_get_data', self.Instance, channel, n_voxels, data_ptr);
 
             if not(data_ptr.isNull())
                 data = data_ptr.Value;
