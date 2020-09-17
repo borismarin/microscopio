@@ -97,6 +97,10 @@ classdef AOLDAQ < handle
 
             clear data_ptr;
         end
+                
+        function flush_fifo(self, channel)
+           calllib('libaoldaq', 'aoldaq_flush_fifo', self.Instance, channel);
+        end
 
         function session = get_nifpga_session(self)
             session = calllib('libaoldaq', 'aoldaq_get_nifpga_session', self.Instance);
