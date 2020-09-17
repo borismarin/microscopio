@@ -93,6 +93,8 @@ classdef AOLDAQ < handle
 
             if not(data_ptr.isNull())
                 data = data_ptr.Value;
+            else
+                data = [];
             end
 
             clear data_ptr;
