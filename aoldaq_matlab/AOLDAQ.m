@@ -21,7 +21,7 @@ classdef AOLDAQ < handle
             end
 
             args = {};
-            %args.block_size = block_size;
+            args.block_size = block_size;
             args.mode = uint32(acq_mode);
             %args.scan_params = scan_params;
             args.n_channels = n_channels;
@@ -89,10 +89,11 @@ classdef AOLDAQ < handle
             marker = 42; % This will show up in memory instead of meaningless 1s or 0s. This makes debugging easier.
             tmp = uint32(marker * ones(1, n_voxels));
             data_ptr = libpointer('uint32Ptr', tmp);
-            nread = calllib('libaoldaq', 'aoldaq_get_data', self.Instance, channel, n_voxels, data_ptr);
+            %nread = calllib('libaoldaq', 'aoldaq_get_data', self.Instance, channel, n_voxels, data_ptr);
+            nread = calllib('libaoldaq', 'aoldaq_get_data_blocking', self.Instance, channel, n_voxels, data_ptr, 100);
 
             if not(data_ptr.isNull())
-                data = data_ptr.Value;
+                data = data_ptr.Value(1:nread);
             else
                 data = [];
             end
